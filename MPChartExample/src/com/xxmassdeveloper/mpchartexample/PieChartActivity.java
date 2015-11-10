@@ -4,6 +4,10 @@ package com.xxmassdeveloper.mpchartexample;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,27 +62,30 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
         mChart = (PieChart) findViewById(R.id.chart1);
         mChart.setUsePercentValues(true);
         mChart.setDescription("");
-        
+        mChart.setExtraOffsets(5, 10, 5, 5);
+
         mChart.setDragDecelerationFrictionCoef(0.95f);
 
         tf = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
 
         mChart.setCenterTextTypeface(Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf"));
+        mChart.setCenterText(generateCenterSpannableText());
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
 
         mChart.setTransparentCircleColor(Color.WHITE);
         mChart.setTransparentCircleAlpha(110);
-        
+
         mChart.setHoleRadius(58f);
         mChart.setTransparentCircleRadius(61f);
 
-        mChart.setDrawCenterText(true);   
+        mChart.setDrawCenterText(true);
 
         mChart.setRotationAngle(0);
         // enable rotation of the chart by touch
         mChart.setRotationEnabled(true);
+        mChart.setHighlightPerTapEnabled(true);
 
         // mChart.setUnit(" €");
         // mChart.setDrawUnitsInChart(true);
@@ -86,11 +93,9 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
         // add a selection listener
         mChart.setOnChartValueSelectedListener(this);
 
-        mChart.setCenterText("MPAndroidChart\nby Philipp Jahoda");
-
         setData(3, 100);
 
-        mChart.animateY(1500, Easing.EasingOption.EaseInOutQuad);
+        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mChart.spin(2000, 0, 360);
 
         Legend l = mChart.getLegend();
@@ -149,15 +154,15 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
                 mChart.invalidate();
                 break;
             case R.id.animateX: {
-                mChart.animateX(1800);
+                mChart.animateX(1400);
                 break;
             }
             case R.id.animateY: {
-                mChart.animateY(1800);
+                mChart.animateY(1400);
                 break;
             }
             case R.id.animateXY: {
-                mChart.animateXY(1800, 1800);
+                mChart.animateXY(1400, 1400);
                 break;
             }
         }
@@ -192,7 +197,7 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
             xVals.add(mParties[i % mParties.length]);
 
         PieDataSet dataSet = new PieDataSet(yVals1, "Election Results");
-        dataSet.setSliceSpace(3f);
+        dataSet.setSliceSpace(2f);
         dataSet.setSelectionShift(5f);
 
         // add a lot of colors
@@ -232,6 +237,18 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
         mChart.invalidate();
     }
 
+    private SpannableString generateCenterSpannableText() {
+
+        SpannableString s = new SpannableString("MPAndroidChart developed by Philipp Jahoda");
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
+        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
+        return s;
+    }
+
     @Override
     public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
 
@@ -258,46 +275,4 @@ public class PieChartActivity extends DemoBase implements OnSeekBarChangeListene
         // TODO Auto-generated method stub
 
     }
-
-    // private void removeLastEntry() {
-    //
-    // PieData data = mChart.getDataOriginal();
-    //
-    // if (data != null) {
-    //
-    // PieDataSet set = data.getDataSet();
-    //
-    // if (set != null) {
-    //
-    // Entry e = set.getEntryForXIndex(set.getEntryCount() - 1);
-    //
-    // data.removeEntry(e, 0);
-    // // or remove by index
-    // // mData.removeEntry(xIndex, dataSetIndex);
-    //
-    // mChart.notifyDataSetChanged();
-    // mChart.invalidate();
-    // }
-    // }
-    // }
-    //
-    // private void addEntry() {
-    //
-    // PieData data = mChart.getDataOriginal();
-    //
-    // if (data != null) {
-    //
-    // PieDataSet set = data.getDataSet();
-    // // set.addEntry(...);
-    //
-    // data.addEntry(new Entry((float) (Math.random() * 25) + 20f,
-    // set.getEntryCount()), 0);
-    //
-    // // let the chart know it's data has changed
-    // mChart.notifyDataSetChanged();
-    //
-    // // redraw the chart
-    // mChart.invalidate();
-    // }
-    // }
 }
